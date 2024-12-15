@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, } from "react";
 
 type Message = {
   role: "user" | "ai";
@@ -34,6 +34,18 @@ export default function Home() {
 
       // TODO: Handle the response from the chat API to display the AI response in the UI
 
+      // Parse the JSON response from the API
+      const data = await response.json();
+      console.log("API Response:", data); // Log the entire response for debugging
+
+      // Access the message correctly based on your API response structure
+      if (data && typeof data.message === 'string') { // Check if data.message is a string
+        if (response.ok) {
+          setMessages(prev => [...prev, { role: 'ai', content: data.message }]);
+      }
+      } else {
+        console.error("Expected a string but received:", data.message); // Log error if not a string
+      }
 
 
 
@@ -52,7 +64,7 @@ export default function Home() {
       {/* Header */}
       <div className="w-full bg-gray-800 border-b border-gray-700 p-4">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-xl font-semibold text-white">Chat</h1>
+        <h1 className="text-2xl font-serif font-bold text-white">Chat with LucyBot</h1>
         </div>
       </div>
 
@@ -64,15 +76,15 @@ export default function Home() {
               key={index}
               className={`flex gap-4 mb-4 ${
                 msg.role === "ai"
-                  ? "justify-start"
-                  : "justify-end flex-row-reverse"
+                ? "justify-start"  
+                : "justify-end"    
               }`}
             >
               <div
-                className={`px-4 py-2 rounded-2xl max-w-[80%] ${
+                className={`px-4 py-2 rounded-2xl max-w-[80%] shadow-lg transition-all duration-300 ${
                   msg.role === "ai"
-                    ? "bg-gray-800 border border-gray-700 text-gray-100"
-                    : "bg-cyan-600 text-white ml-auto"
+                  ? "bg-gradient-to-r from-indigo-900 to-purple-900 border border-indigo-700/30 text-slate-100"
+                  : "bg-gradient-to-r from-emerald-800 to-teal-900 border border-emerald-700/30 text-slate-100"
                 }`}
               >
                 {msg.content}
@@ -83,14 +95,14 @@ export default function Home() {
             <div className="flex gap-4 mb-4">
               <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-gray-400"
+                  className="w-5 h-5 text-gray-400 animate-spin"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-4-8c.79 0 1.5-.71 1.5-1.5S8.79 9 8 9s-1.5.71-1.5 1.5S7.21 11 8 11zm8 0c.79 0 1.5-.71 1.5-1.5S16.79 9 16 9s-1.5.71-1.5 1.5.71 1.5 1.5 1.5zm-4 4c2.21 0 4-1.79 4-4h-8c0 2.21 1.79 4 4 4z" />
                 </svg>
               </div>
-              <div className="px-4 py-2 rounded-2xl bg-gray-800 border border-gray-700 text-gray-100">
+              <div className="px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-100 shadow-md">
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
                   <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
@@ -112,12 +124,12 @@ export default function Home() {
               onChange={e => setMessage(e.target.value)}
               onKeyPress={e => e.key === "Enter" && handleSend()}
               placeholder="Type your message..."
-              className="flex-1 rounded-xl border border-gray-700 bg-gray-900 px-4 py-3 text-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent placeholder-gray-400"
+              className="flex-1 rounded-lg border border-gray700 bg-gray900 px-4 py-3 text-black focus:outline-none focus:ring focus:ring-blue500 focus:border-transparent placeholder-gray400"
             />
             <button
               onClick={handleSend}
               disabled={isLoading}
-              className="bg-cyan-600 text-white px-5 py-3 rounded-xl hover:bg-cyan-700 transition-all disabled:bg-cyan-800 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-blue600 text-white px[20px] py[10px] rounded-lg hover:bg-blue700 transition-all disabled:bg-blue800 disabled:opacity-[50%] disabled:cursor-notAllowed"
             >
               {isLoading ? "Sending..." : "Send"}
             </button>
